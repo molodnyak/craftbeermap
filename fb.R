@@ -21,7 +21,7 @@ rd$FBID <- unlist(lapply(x, function(x) x[4]))
 
 #Facebook.API
 ##ToGEtToken Open https://developers.facebook.com/tools/explorer
-tokenfb <- "EAACEdEose0cBALhttKTY1gZA5JSLdm9V07Kg0kzMeWQJ5MIDXCCLRz8B9MZBofZA00Os1t4q6EbUwCzRxLWf7Rk0ohc18BCbpZBFAnHWwpEI8Iyfi6jj1fXfTsLI6ThY5GC3td4hk0JObp7u9GokRg4yv9oaZCMzdlCn6OaLjMWjtsQ2HLxvHeOZAhCvZAEIvwZD"
+tokenfb <- "" #<----- past your access Token
 baseurlfb <- "https://graph.facebook.com/v2.8/"
 
 
