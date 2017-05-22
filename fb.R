@@ -77,7 +77,7 @@ for (i in 1:nrow(rd)){
 
 rd$FBhours <- as.numeric(rd$FBhours)
 
-                         
+#----------------------------------------------                        
 #Посты-------------------------------------
 #HTTP error 400 Control
 rd[,"FBPostRatio"] <- NA
