@@ -76,3 +76,83 @@ for (i in 1:nrow(rd)){
 }
 
 rd$FBhours <- as.numeric(rd$FBhours)
+
+                         
+#Посты-------------------------------------
+#HTTP error 400 Control
+rd[,"FBPostRatio"] <- NA
+rd[,"FBLastPostDays"] <- NA
+
+#LOOP=posts
+for (i in 1:nrow(rd)){
+  tryCatch({
+    posts <- fromJSON(paste0(baseurlfb, rd$FBID[i], "/", "posts?", "limit=100", "&access_token=", tokenfb))
+    if(length(posts) == "1") {rd$FBPostRatio[i] <- "0"} 
+    else { 
+      if(length(posts) == "2") {
+        
+        rd$FBPostRatio[i] <- ifelse(as.numeric(Sys.Date() - as.Date(posts$data$created_time[1])) <= 31, 
+                                    round(length(posts$data$created_time)/as.numeric(Sys.Date() - as.Date(posts$data$created_time[length(posts$data$created_time)])), digits=3), 
+                                    0)
+        rd$FBLastPostDays[i] <- as.numeric(Sys.Date() - as.Date(posts$data$created_time[1]))
+
+      }
+    }
+    message("Scraping Facebook posts ", paste(rd$FBID[i], i, "from", nrow(rd), sep = " "))
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}        
+
+
+#FBcheckinsRatio
+rd$FBcheckinsRatio <- round(rd$FBcheckins/as.numeric(Sys.Date() - as.Date(rd$OpenDate, '%d/%m/%Y')), digits=3)
+
+#Иностранцы-------------------------------------
+#HTTP error 400 Control
+rd[,"FBInter"] <- NA
+
+#LOOP=insights page_fans_country
+for (i in 1:nrow(rd)){
+  tryCatch({
+    insights <- fromJSON(paste0(baseurlfb, rd$FBID[i], "/insights/page_fans_country/lifetime?",
+                                "&access_token=", tokenfb))
+    if(length(posts) == "1") {rd$FBInter[i] <- "0"} 
+    else { 
+      if(length(posts) == "2") {
+        
+        rd$FBInter[i] <- round(1-insights$data$values[[1]][[1]][3,]$RU/sum(na.omit(unlist(insights$data$values[[1]]$value[3,]))), digits=3)
+
+      }
+    }
+    message("Scraping Facebook insights ", paste(rd$FBID[i], i, "from", nrow(rd), sep = " "))
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}    
+
+
+#Упоминания группы в постах-------------------------------------
+#HTTP error 400 Control
+rd[,"FBtagged"] <- NA
+rd[,"FBtaggedRatio"] <- NA
+rd[,"FBLasttaggedDays"] <- NA
+
+#LOOP=tagged
+for (i in 1:nrow(rd)){
+  tryCatch({
+    tagged <- fromJSON(paste0(baseurlfb, rd$FBID[i], "?fields=id%2Cname%2Cband_interests%2Cdescription%2C",
+                          "tagged.include_hidden(true).",
+                          "since(2013-01-01)", ".",
+                          "until(now)", ".",
+                          "limit(100)", 
+                          "&access_token=", tokenfb))
+    if(length(tagged) == "0") {rd$FBtagged[i] <- "0"} 
+    else { 
+      if(length(tagged) > "0") {
+        
+        rd$FBtagged[i] <- length(tagged$tagged$data$tagged_time)
+        rd$FBLasttaggedDays[i] <- as.numeric(Sys.Date() - as.Date(tagged$tagged$data$tagged_time[1]))
+        rd$FBtaggedRatio[i] <- round(length(tagged$tagged$data$tagged_time)/(as.numeric(Sys.Date() - as.Date(tagged$tagged$data$tagged_time[length(tagged$tagged$data$tagged_time)]))/7), digits=3)
+        
+      }
+    }
+    message("Scraping Facebook tagged ", paste(rd$FBID[i], i, "from", nrow(rd), sep = " "))
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+} 
