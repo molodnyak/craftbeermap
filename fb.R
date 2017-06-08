@@ -1,7 +1,4 @@
 
-install.packages("jsonlite")
-install.packages("curl")
-#----------------------------------------------
 library(jsonlite)
 library(curl)
 
