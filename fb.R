@@ -18,7 +18,7 @@ rd$FBID <- unlist(lapply(x, function(x) x[4]))
 
 #Facebook.API
 ##ToGEtToken Open https://developers.facebook.com/tools/explorer
-tokenfb <- "" #<----- past your access Token
+tokenfb <- "" #<-------------------------------------- past your new access Token here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 baseurlfb <- "https://graph.facebook.com/v2.8/"
 
 
@@ -76,7 +76,6 @@ rd$FBhours <- as.numeric(rd$FBhours)
 
 #----------------------------------------------                        
 #Посты-------------------------------------
-#HTTP error 400 Control
 rd[,"FBPostRatio"] <- NA
 rd[,"FBLastPostDays"] <- NA
 
@@ -103,8 +102,8 @@ for (i in 1:nrow(rd)){
 #FBcheckinsRatio
 rd$FBcheckinsRatio <- round(rd$FBcheckins/as.numeric(Sys.Date() - as.Date(rd$OpenDate, '%d/%m/%Y')), digits=3)
 
+#---------------------------------------------- 
 #Иностранцы-------------------------------------
-#HTTP error 400 Control
 rd[,"FBInter"] <- NA
 
 #LOOP=insights page_fans_country
@@ -124,9 +123,8 @@ for (i in 1:nrow(rd)){
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }    
 
-
+#---------------------------------------------- 
 #Упоминания группы в постах-------------------------------------
-#HTTP error 400 Control
 rd[,"FBtagged"] <- NA
 rd[,"FBtaggedRatio"] <- NA
 rd[,"FBLasttaggedDays"] <- NA
