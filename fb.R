@@ -8,7 +8,7 @@ rd$FBID <- unlist(lapply(x, function(x) x[4]))
 
 #Facebook.API
 ##ToGEtToken Open https://developers.facebook.com/tools/explorer
-tokenfb <- "" #<-------------------------------------- past your new access Token here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+tokenfb <- "" #<-------------------------------------- paste your new access Token here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 baseurlfb <- "https://graph.facebook.com/v2.8/"
 
 
@@ -141,3 +141,9 @@ for (i in 1:nrow(rd)){
     message("Scraping Facebook tagged ", paste(rd$FBID[i], i, "from", nrow(rd), sep = " "))
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 } 
+
+#SAVE
+saveRDS(rd, file="~/rdJuin12.Rds") # ~ paste your actual address here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+                      
