@@ -2,7 +2,7 @@ library(jsonlite)
 library(curl)
 
 #FOURSQUARE.API
-tokenfrsq <- "YOSYQPMXG15TEFTIHKDTJVBCZ1IJ2M0ZGHS2AX2SE1EXJBOW"
+tokenfrsq <- "YOUR_API_KEY"
 baseurlfrsq <- "https://api.foursquare.com/v2/venues/"
 
 x <- strsplit(rd$FRSQ, '/')
@@ -74,52 +74,3 @@ label(rd$FRSQvisitsRatio) <- c(FRSQvisitsRatio="Ср. визитов в день
 label(rd$FRSQcheckinsActivity) <- c(FRSQcheckinsActivity="Чекины/Юзеры")
 #FRSQvisitscheckins
 label(rd$FRSQvisitscheckins) <- c(FRSQvisitscheckins="Чекины/Посещения")
-
-
-#NEXTVENUES TOP 5
-
-#HTTP error 400 Control
-frsqnext <- data.frame("Name"="", "FRSQID"="", "FRSQnext"="", "FRSQnextvenues"="", "FRSQnextvenuesid"="", 
-                      "FRSQnextvenuesadd"="", "FRSQnextvenueslat"="", "FRSQnextvenueslng"="", stringsAsFactors = F)
-frsqnext <- frsqnext[-1,]
-
-for (i in 1:nrow(rd)){
-  tryCatch({
-    frsq <- fromJSON(paste0(baseurlfrsq, rd$FRSQID[i], "/nextvenues", "?oauth_token=", tokenfrsq, "&v=20131016"))
-    if(length(frsq) == "0") {stop("ERROR: FOURSQUARE Page is unavailable ! - ", rd$Name[i])}
-    else { 
-      if(length(frsq) != "0") {
-        
-        DF <- data.frame("Name" = rd$Name[i], "FRSQID" = rd$FRSQID[i], "FRSQnext" = 1:length(frsq$response$nextVenues$items$id),
-                         "FRSQnextvenues" = frsq$response$nextVenues$items$name, 
-                         "FRSQnextvenuesid" = frsq$response$nextVenues$items$id, 
-                         "FRSQnextvenuesadd" = frsq$response$nextVenues$items$location$address, 
-                         "FRSQnextvenueslat" = frsq$response$nextVenues$items$location$lat, 
-                         "FRSQnextvenueslng" = frsq$response$nextVenues$items$location$lng, stringsAsFactors = F)
-        frsqnext <- rbind(frsqnext, DF)
-        
-      }
-    }
-    message("Scraping Fousquare ", paste(rd$Name[i], i, "from", nrow(rd), sep = " "))
-  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
-}
-
-#NA NaN correction
-rd$FRSQcheckins[is.na(rd$FRSQcheckins)] <- 0
-rd$FRSQusers[is.na(rd$FRSQusers)] <- 0
-rd$FRSQvisits[is.na(rd$FRSQvisits)] <- 0
-
-rd$FRSQcheckinsRatio[is.na(rd$FRSQcheckinsRatio)] <- 0
-rd$FRSQvisitsRatio[is.na(rd$FRSQvisitsRatio)] <- 0
-rd$FRSQcheckinsActivity[is.na(rd$FRSQcheckinsActivity)] <- 0
-rd$FRSQvisitscheckins[is.na(rd$FRSQvisitscheckins)] <- 0
-
---------------------------------
-
-
-frsq <- fromJSON("https://api.foursquare.com/v2/venues/55990d1b498e15ebed36f3b9?oauth_token=YOSYQPMXG15TEFTIHKDTJVBCZ1IJ2M0ZGHS2AX2SE1EXJBOW&v=20131016")
-frsq <- fromJSON("https://api.foursquare.com/v2/venues/57a4f831498e1c2e42f8de04/nextvenues?oauth_token=YOSYQPMXG15TEFTIHKDTJVBCZ1IJ2M0ZGHS2AX2SE1EXJBOW&v=20131016")
-
-
-
-
