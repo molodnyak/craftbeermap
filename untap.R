@@ -1,6 +1,5 @@
-
-#read csv data
-untap <- read.csv("C:/Users/Evgenii Molodniak/Documents/Travail/Site/Rating/UNTAPPDjuin.csv", header = T, sep = ";", stringsAsFactors = F)
+#read csv data from import.io
+untap <- read.csv("Rating/UNTAPPDjuin.csv", header = T, sep = ";", stringsAsFactors = F)
 rd <- cbind(rd, untap[, 3:5])
 
 #Names correction
@@ -84,14 +83,3 @@ for (i in c(7,9,15,30,31,42,52,57,65)){
     message("Parsing UNTAPPD unit ", paste(v$UNTAPPD[i], i, "from", nrow(v), sep = " "))
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
-
-
-##OUT FORMAT
-for (i in c(16,34,))
-
-
-
-
-untap <- fromJSON("https://extraction.import.io/query/extractor/50d463cc-c5dd-4b38-b400-d06c96a6ac2e?_apikey=791960314e3449749ef77d700609baa8a79762690a6902f84ad73318e56a81fe4f82f986dd107cf39a033dbd2185be74bc1fa1ae2107905b9dac69d36273f50f2e778e2af92cf667b178febd06dc7e9e&url=https://untappd.com/venue/2180553")
-
-#v <- v[v$UNTAPPD != "javascript:void(0)",]
