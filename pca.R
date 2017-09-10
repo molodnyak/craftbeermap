@@ -187,8 +187,3 @@ plot(rating$Rating, rating$Rank)
 plot(rating$Rating, rating$Rank[order(rating$Rank)], col= "LightSeaGreen", pch = 19, cex = 1, lty = "solid", lwd = 2, 
      xlab="Rating Value", ylab="Rank", xlim=c(0, 5.7), ylim=rev(range(seq(0, 80, 10))))
 abline(v = c(2,5))
-
-## ICONS
-
-x <- fromJSON("https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+Name,Pic+FROM+1wYRtmoIk4kq7XkQG2ysFEveCwQDpLzfjNjF7Jayo&key=AIzaSyD9OWz96j4E0XgWWFwxL7T-G_ilz0o11Vk")
-View(x$rows)
