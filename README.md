@@ -1,3 +1,4 @@
 # craftbeermap
-Bar ratings
-craftbeermap.ru/rating
+Bar ratings 
+
+http://craftbeermap.ru/rating/
