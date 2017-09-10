@@ -1,6 +1,5 @@
-
-#read csv data
-inst <- read.csv("C:/Users/Evgenii Molodniak/Documents/Travail/Site/Rating/INSTjuin.csv", header = T, sep = ";", stringsAsFactors = F)
+#read csv data from import.io
+inst <- read.csv("Rating/INSTjuin.csv", header = T, sep = ";", stringsAsFactors = F)
 rd <- cbind(rd, inst[, 4:6])
 
 #Names correction
@@ -21,8 +20,6 @@ label(rd$INSTFollowing) <- c(INSTFollowing="Подписки")
 #INSTRatio
 label(rd$INSTRatio) <- c(INSTRatio="Ср. постов в день")
 
-
-
 #-----------------------------------------------------------------------------------------------------
 
 library(cluster)
@@ -35,7 +32,7 @@ clusters <- kmeans(y, centers=2)
 clusplot(y, clusters$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 
 
-##INSTAGRAM PARSING /////////////////// dont working /////////////////////
+##INSTAGRAM PARSING /////////////////// dont working now /////////////////////
 library(jsonlite)
 library(curl)
 apikeyio <- "791960314e3449749ef77d700609baa8a79762690a6902f84ad73318e56a81fe4f82f986dd107cf39a033dbd2185be74bc1fa1ae2107905b9dac69d36273f50f2e778e2af92cf667b178febd06dc7e9e"
@@ -69,13 +66,3 @@ for (i in 1:nrow(v)){
     message("Parsing INSTAGRAM unit ", paste(v$INSTID[i], i, "from", nrow(v), sep = " "))
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
-
-
-
-
-inst <- fromJSON("https://extraction.import.io/query/extractor/612970d2-35b8-472b-8f37-2314364c044b?_apikey=791960314e3449749ef77d700609baa8a79762690a6902f84ad73318e56a81fe4f82f986dd107cf39a033dbd2185be74bc1fa1ae2107905b9dac69d36273f50f2e778e2af92cf667b178febd06dc7e9e&url=https://instagram.com/beer.happens")
-
-#TO NEWS
-View(paste(paste0("'@", inst[,1], "'"), collapse = ', '))
-
-
