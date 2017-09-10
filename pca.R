@@ -130,9 +130,9 @@ rd$Rank <- rank(-rd$Rating)
 #LABELS
 library(Hmisc)
 #Rating
-label(rd$Rating) <- c(Rating="Ðåéòèíã")
+label(rd$Rating) <- c(Rating="Ð ÐµÐ¹Ñ‚Ð¸Ð½Ð³")
 #Rank
-label(rd$Rank) <- c(Rank="Ìåñòî")
+label(rd$Rank) <- c(Rank="ÐœÐµÑÑ‚Ð¾")
 #------------------------------------------
 
 #Final RATING Table
@@ -148,9 +148,9 @@ rating$Rank <- rank(-rating$Rating)
 #LABELS
 library(Hmisc)
 #Rating
-label(rating$Rating) <- c(Rating="Ðåéòèíã")
+label(rating$Rating) <- c(Rating="Ð ÐµÐ¹Ñ‚Ð¸Ð½Ð³")
 #Rank
-label(rating$Rank) <- c(Rank="Ìåñòî")
+label(rating$Rank) <- c(Rank="ÐœÐµÑÑ‚Ð¾")
 
 #SORT
 rating <- rating[order(-rating$Rating),]
@@ -192,192 +192,3 @@ abline(v = c(2,5))
 
 x <- fromJSON("https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+Name,Pic+FROM+1wYRtmoIk4kq7XkQG2ysFEveCwQDpLzfjNjF7Jayo&key=AIzaSyD9OWz96j4E0XgWWFwxL7T-G_ilz0o11Vk")
 View(x$rows)
-
-#-----------------------------------------------------------------------------------------------------
-
-
-############################ 12.04.2017 CHANGES
-plot(rdloadings$Weighted, rdloadings1$Weighted, col= "LightSeaGreen", pch = 19, cex = 1, lty = "solid", lwd = 2, 
-     xlab="New Weights", ylab="Old Weights")
-text(rdloadings$Weighted, rdloadings1$Weighted, labels=row.names(rdloadings), cex= 0.8, pos=1)
-identify(rdloadings$Weighted, rdloadings1$Weighted, labels = row.names(rdloadings))
-
-
-# + Supp
-#Data for PCA
-#-c(28,29,57,58) delete One more pub / Easy Pub (not craft and double)
-rdpca <- rd[-c(28,29,57,58), c("LifeTime", "Tap", "Seat", "WC", "Bartender", "TapRatio", "WCRatio", "BartenderRatio", 
-              "FBhours", "FBfan_count", "FBInter", 
-              "FBPostRatio", "FBtaggedRatio", "FBlikesRatio", "FBcommentsRatio", "FBsharedpostsRatio", 
-              "VKmembers", "VKsexF", 
-              "FRSQcheckins", "FRSQusers", "FRSQvisits", "FRSQcheckinsActivity", "FRSQcheckinsRatio", "FRSQvisitsRatio", 
-              "INSTFollowers", "INSTRatio", "UNTAPUnique", "UNTAPMonthly",  
-              "Card", "Street", "Liquor", "Waiter", "WiFi", "Cuisine")]
-x <- rd$FBID[-c(28,29,57,58)]
-#x[29] <- "onemoreus2"
-row.names(rdpca) <- x
-rdpca[,29:34] <- lapply(rdpca[,29:34], as.factor)
-res.pca <- PCA(rdpca, scale.unit=TRUE, quali.sup=c(29:34), graph=F)
-fviz_pca_ind(res.pca)
-fviz_pca_var(res.pca, scale.unit=TRUE, col.var="cos2") + 
-  scale_color_gradient2(low="cyan", mid="blue", high="red", midpoint=0.5) + 
-  theme_minimal()
-
-fviz_pca_biplot(res.pca, col.var="cos2", addEllipses = T) + 
-  scale_color_gradient2(low="gray30", mid="blue", high="red", midpoint=0.5)
-
-res.desc <- dimdesc(res.pca, axes = c(1,2))
-res.desc$Dim.1
-
-plot.PCA(res.pca, choix="ind",invisible="ind")
-plot(res.pca,choix="ind",new.plot=FALSE)
-plot(res.pca,choix="var",new.plot=FALSE)
-##Draw confidence ellipses around the categories
-plotellipses(res.pca)
-
-View(res.pca$quali.sup$cos2)
-
-##Correlation circle
-fviz_pca_var(res.pca)
-
-#LOADINGS
-
-
-
-View(data.frame(rd$Name, rd$Rating, rd$Rank))
-
-#-----------------------------------------------------------------------------------------------------
-
-#+++++++++++++++
-
-#Data for MCA
-rdpca1 <- rdpca
-rdpca1$Card[rdpca1$Card == 1] <- 'Yes'
-rdpca1$Card[rdpca1$Card == 0] <- 'No'
-rdpca1$Street[rdpca1$Street == 1] <- 'Yes'
-rdpca1$Street[rdpca1$Street == 0] <- 'No'
-rdpca1$Liquor[rdpca1$Liquor == 1] <- 'Yes'
-rdpca1$Liquor[rdpca1$Liquor == 0] <- 'No'
-rdpca1$Waiter[rdpca1$Waiter == 1] <- 'Yes'
-rdpca1$Waiter[rdpca1$Waiter == 0] <- 'No'
-rdpca1$WiFi[rdpca1$WiFi == 1] <- 'Yes'
-rdpca1$WiFi[rdpca1$WiFi == 0] <- 'No'
-rdpca1$Cuisine[rdpca1$Cuisine == 1] <- 'Yes'
-rdpca1$Cuisine[rdpca1$Cuisine == 0] <- 'No'
-rdpca1[,30:35] <- lapply(rdpca1[,30:35], as.character)
-res.pca1 <- PCA(rdpca1, scale.unit=TRUE, quali.sup=c(30:35), graph=F)
-fviz_pca_var(res.pca1, scale.unit=TRUE, col.var="cos2") + 
-  scale_color_gradient2(low="lightblue", mid="blue", high="red", midpoint=0.5) + 
-  theme_minimal()
-View(data.frame(res.pca$quali.sup$cos2[,1], res.pca1$quali.sup$cos2[,1]))
-View(data.frame(res.pca$var$cos2[,1], res.pca$var$cos2[,1]))
-plotellipses(res.pca1, keepvar = "quali.sup", magnify = 3, cex = 1, pch = 19, lwd = 6, pch.means=2, type = c("g","p"))
-
-
-
-x <- rd$FBID
-x[29] <- "onemoreus2"
-row.names(rdpca) <- x
-rdpca[,31:38] <- lapply(rdpca[,31:38], as.factor)
-
-#PCA
-library(factoextra)
-library(FactoMineR)
-#quanti.sup: vector of indexes of continuous supplementary variables
-#quali.sup: vector of indexes of categorical supplementary variables
-res.mca <- MCA(rdpca, quanti.sup=c(1:28))
-
-plot.MCA(res.mca, invisible=c("var","quali.sup"), cex=0.9)
-### = plot.MCA(res.mca, invisible=c("var"), cex=0.9)
-plot.MCA(res.mca, invisible=c("ind","quali.sup"), cex=0.9)
-### = plot.MCA(res.mca, invisible=c("ind"), cex=0.9)
-plot.MCA(res.mca, invisible=c("ind", "var"), cex=0.9)
-
-View(res.mca$var$cos2)
-
-View(res.mca$quanti.sup$coord)
-
-##################### FACTOR ANALYSIS
-rdpca1[,30:35] <- lapply(rdpca1[,30:35], as.factor)
-res <- MFA(rdpca1, group=c(9,20,6), type=c("c","c","n"), ncp=5, name.group=c("oflinenum","online","oflinecat"))
-
-
-fviz_pca_var(res.pca1, scale.unit=TRUE, col.var="cos2") + 
-  scale_color_gradient2(low="lightblue", mid="blue", high="red", midpoint=0.5) + 
-  theme_minimal()
-
-
-
-
-#-----------------------------------------------------------------------------------------------------
-rdpca <- rd[c("Card", "Street", "Liquor", "Waiter", "WiFi", "Cuisine", "Menu", "Ring", "FRSQcheckinsRatio")]
-rdpca[,1:8] <- lapply(rdpca[,1:8], as.factor)
-res.mca <- MCA(rdpca, quanti.sup=9)
-
-
-## homals
-library(homals)
-res.homals <- homals(rdpca, level = c(rep("numerical",28),rep("nominal",6)), itermax = 1000)
-
-#-----------------------------------------------------------------------------------------------------
-
-###FBID correction
-
-row.names(rdpca) <- c("1516", "Bad.Bro.Bar", "BeerHappens", "BeerMarket", "BeerMood", "Beerbox", "Beertep", 
-                      "BestBar", "BoozerBar", "BorodaBar", "BottleCraft", "CansAndBeer", "CraftAndDraft", 
-                      "CraftOrchestra", "CraftStation", "CraftRepublic", "DrunkPunk", "FckingCraftPub", 
-                      "HLSTK", "HopHeadCraft", "HowardLovesCraft", "ILikeCraft", "Jawsspot", "Kraftwerk", 
-                      "LittleCraftBar", "LoadingCraftBar", "LosBandidos", "Parka", "Pasternak", "Pivbar", 
-                      "Pivbar2", "Pivbar3", "RULEtaproom", "RedCodeBar", "RightHops", "RollingBarrels")
-
-#QUALITATIVE Variables correction
-rdpca$Liquor[rdpca$Liquor == '2'] <- 1
-rdpca$WiFi[rdpca$WiFi == '2'] <- 1
-
-#-c(28,29,57,58) delete One more pub / Easy Pub (not craft and double)
-rdpca <- rd[-c(28,29,57,58), c("LifeTime", "Tap", "Seat", "WC", "Bartender", "TapRatio", "WCRatio", "BartenderRatio", 
-                               "FBhours", "FBfan_count", "FBInter", 
-                               "FBPostRatio", "FBtaggedRatio", "FBlikesRatio", "FBcommentsRatio", "FBsharedpostsRatio", 
-                               "VKmembers", "VKsexF", 
-                               "FRSQcheckins", "FRSQusers", "FRSQvisits", "FRSQcheckinsActivity", "FRSQcheckinsRatio", "FRSQvisitsRatio", 
-                               "INSTFollowers", "INSTRatio", "UNTAPTotal", "UNTAPUnique", "UNTAPMonthly",  
-                               "Card", "Street", "Liquor", "Waiter", "WiFi", "Cuisine")]
-row.names(rdpca) <- rd$FBID[-c(28,29,57,58)]
-
-#------------------------------------------
-rd1 <- rd[-c(28,29,57,58),]
-#Share bias correction !!! --> Self share by administrators
-########FBID craftstationbeer and TheBestBar
-plot(rd1$FBlikesRatio, rd1$FBsharedpostsRatio, col= "LightSeaGreen", pch = 19, cex = 1, lty = "solid", lwd = 2, 
-     xlab="Facebook likes Ratio", ylab="Facebook shared posts Ratio", xlim=c(-5, 35), ylim=c(-1, 5))
-text(rd1$FBlikesRatio, rd1$FBsharedpostsRatio, labels=rd1$Name, cex= 0.8, pos=1)
-
-## FBsharedpostsRatio BIAS CORRECTIONS / to zero
-### rdpca$FBsharedpostsRatio[8] <- 0
-### rdpca$FBsharedpostsRatio[15] <- 0
-rdpca["craftstationbeer",]$FBsharedpostsRatio <- 0
-rdpca["TheBestBar",]$FBsharedpostsRatio <- 0
-
-# INSTFollowers BIAS CORRECTIONS
-########INSTID bar.good.idea and beertime_bar
-plot(rd1$FBfan_count, rd1$INSTFollowers, col= "LightSeaGreen", pch = 19, cex = 1, lty = "solid", lwd = 2, 
-     xlab="Facebook Fans", ylab="Instagram Followers", xlim=c(-500, 5000), ylim=c(-1000, 13000))
-text(rd1$FBfan_count, rd1$INSTFollowers, labels=rd1$Name, cex= 0.8, pos=1)
-
-## to median
-### rdpca$INSTFollowers[45] <- median(rdpca$INSTFollowers[-c(45, 69)])
-### rdpca$INSTFollowers[69] <- median(rdpca$INSTFollowers[-c(45, 69)])
-rdpca["BarGoodIdea",]$INSTFollowers <- median(rdpca$INSTFollowers[-c(45, 69)])
-rdpca["1704849409750613",]$INSTFollowers <- median(rdpca$INSTFollowers[-c(45, 69)])
-
-# ------------
-modelINST <- lm(INSTFollowers ~ UNTAPUnique, data = rdpca[-c(47, 75)])
-summary(modelINST)
-rm(modelINST)
-
-
-x <- data.frame("Var1" = c("Magasin-bar","Bar"), "Freq" = c(52, 15))
-plot(gvisPieChart(x,
-                  labelvar = "Var1", numvar = "Freq", 
-                  options = list(title='', width=400, height='automatic', pieHole=0.4, legend='top', 
-                                 colors="['teal', 'crimson']")))
